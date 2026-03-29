@@ -48,7 +48,7 @@
       gap: 16px;
     }
 
-    .card, .pool-card {
+    .pool-card {
       background: white;
       border-radius: 12px;
       padding: 16px;
@@ -56,26 +56,9 @@
       border-left: 6px solid #ccc;
     }
 
-    .live { border-left-color: #22c55e; }
-    .ondeck { border-left-color: #f59e0b; }
-    .upcoming { border-left-color: #60a5fa; }
-    .done { border-left-color: #6b7280; }
-
-    .court, .pool-title {
+    .pool-title {
       font-weight: bold;
       margin-bottom: 8px;
-    }
-
-    .teams {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.4;
-    }
-
-    .score {
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 8px;
     }
 
     .meta {
@@ -124,6 +107,59 @@
       background: #ede9fe;
       color: #6d28d9;
     }
+
+    .match-card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-left: 6px solid #ccc;
+    }
+
+    .match-header {
+      font-size: 12px;
+      font-weight: 800;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .match-header .match-number {
+      color: #163a70;
+      font-weight: 900;
+    }
+
+    .match-team {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      background: #fafafa;
+      border: 1px solid #f0f0f0;
+    }
+
+    .match-team:last-child {
+      margin-bottom: 0;
+    }
+
+    .match-team.winner {
+      background: #ecfdf5;
+      border-color: #bbf7d0;
+      font-weight: 700;
+      color: #166534;
+    }
+
+    .match-score {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .live { border-left-color: #22c55e; }
+    .ondeck { border-left-color: #f59e0b; }
+    .upcoming { border-left-color: #60a5fa; }
+    .done { border-left-color: #6b7280; }
 
     .bracket-grid {
       display: grid;
@@ -390,7 +426,7 @@ function renderSection(containerId, rows, className) {
 
   rows.forEach(row => {
     const card = document.createElement("div");
-    card.className = `card ${className}`;
+    card.className = `match-card ${className}`;
 
     const scoreA = row["score a"] || "";
     const scoreB = row["score b"] || "";
@@ -398,54 +434,52 @@ function renderSection(containerId, rows, className) {
 
     const isPlayoff = /^(pi|r1|r2|qf|sf|final|gf)\b/i.test(fullTeams);
 
-    let teamDisplay = fullTeams;
+    let matchNumber = "";
+    let teamText = fullTeams;
 
-    if (className === "done" && scoreA !== "" && scoreB !== "") {
-      let matchLabel = "";
-      let teamsOnly = fullTeams;
-
-      if (fullTeams.includes(": ")) {
-        const splitAtColon = fullTeams.split(": ");
-        matchLabel = splitAtColon[0] + ": ";
-        teamsOnly = splitAtColon.slice(1).join(": ");
-      }
-
-      const parts = teamsOnly.split(" vs ");
-
-      if (parts.length === 2) {
-        const teamA = parts[0];
-        const teamB = parts[1];
-
-        const a = Number(scoreA);
-        const b = Number(scoreB);
-
-        const winnerStyle = 'style="font-weight:700; color:#15803d;"';
-        const loserStyle = 'style="opacity:0.85;"';
-
-        const formattedA = a > b
-          ? `<span ${winnerStyle}>${teamA}</span>`
-          : `<span ${loserStyle}>${teamA}</span>`;
-
-        const formattedB = b > a
-          ? `<span ${winnerStyle}>${teamB}</span>`
-          : `<span ${loserStyle}>${teamB}</span>`;
-
-        teamDisplay = `${matchLabel}${formattedA} vs ${formattedB}`;
-      }
+    const matchMatch = fullTeams.match(/Match\s*(\d+)/i);
+    if (matchMatch) {
+      matchNumber = matchMatch[1];
     }
 
-    const scoreLine =
-      (scoreA !== "" || scoreB !== "") ? `${scoreA || "-"} - ${scoreB || "-"}` : "";
+    if (fullTeams.includes(": ")) {
+      teamText = fullTeams.split(": ").slice(1).join(": ");
+    }
+
+    const parts = teamText.split(" vs ");
+    let teamA = parts[0] || "-";
+    let teamB = parts[1] || "-";
+
+    let teamAClass = "match-team";
+    let teamBClass = "match-team";
+
+    if (className === "done" && scoreA !== "" && scoreB !== "") {
+      if (Number(scoreA) > Number(scoreB)) teamAClass += " winner";
+      if (Number(scoreB) > Number(scoreA)) teamBClass += " winner";
+    }
 
     const badgeHtml = isPlayoff ? `<div class="badge playoff">PLAYOFF</div>` : "";
 
     card.innerHTML = `
       ${badgeHtml}
-      <div class="court">Court ${row.court || "-"}</div>
-      <div class="teams">${teamDisplay}</div>
-      <div class="score">${scoreLine}</div>
+      <div class="match-header">
+        <span class="match-number">Match ${matchNumber || "-"}</span>
+        • Court ${row.court || "-"}
+      </div>
+
+      <div class="${teamAClass}">
+        <span>${teamA}</span>
+        <span class="match-score">${scoreA || "-"}</span>
+      </div>
+
+      <div class="${teamBClass}">
+        <span>${teamB}</span>
+        <span class="match-score">${scoreB || "-"}</span>
+      </div>
+
       <div class="meta">${row.division || ""} • ${row.status || ""}</div>
     `;
+
     container.appendChild(card);
   });
 }
