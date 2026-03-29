@@ -9,6 +9,7 @@
       margin: 0;
       background: #f4f6f8;
     }
+
     header {
       background: #163a70;
       color: white;
@@ -17,6 +18,7 @@
       font-size: 28px;
       font-weight: bold;
     }
+
     .tabs {
       display: flex;
       justify-content: center;
@@ -24,46 +26,64 @@
       background: white;
       border-bottom: 1px solid #ddd;
     }
+
     .tab {
       padding: 12px 18px;
       cursor: pointer;
       font-weight: bold;
     }
+
     .tab.active {
       color: #163a70;
       border-bottom: 3px solid #163a70;
     }
+
     .section {
       padding: 20px;
     }
-    .courts {
+
+    .courts, .pools {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
     }
-    .card {
+
+    .card, .pool-card {
       background: white;
       border-radius: 12px;
       padding: 16px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.08);
       border-left: 6px solid #ccc;
     }
+
     .live { border-left-color: #22c55e; }
     .ondeck { border-left-color: #f59e0b; }
     .upcoming { border-left-color: #60a5fa; }
-    .court {
+    .done { border-left-color: #6b7280; }
+
+    .court, .pool-title {
       font-weight: bold;
       margin-bottom: 8px;
     }
+
     .teams {
       font-size: 16px;
       font-weight: 600;
+      line-height: 1.4;
     }
+
+    .score {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
     .meta {
       font-size: 13px;
       color: #666;
       margin-top: 6px;
     }
+
     .error {
       margin: 20px;
       padding: 12px;
@@ -71,6 +91,131 @@
       border: 1px solid #f0d98c;
       border-radius: 8px;
       white-space: pre-wrap;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 6px 4px;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .badge.playoff {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .bracket-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(240px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .round-card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    .round-title {
+      font-weight: 800;
+      font-size: 18px;
+      margin-bottom: 14px;
+      color: #163a70;
+      border-bottom: 2px solid #eef2f7;
+      padding-bottom: 8px;
+    }
+
+    .bracket-match {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+      background: #fafafa;
+    }
+
+    .bracket-match-id {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .bracket-team {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      background: white;
+      border: 1px solid #f0f0f0;
+    }
+
+    .bracket-team:last-child {
+      margin-bottom: 0;
+    }
+
+    .bracket-team-name {
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .bracket-team-score {
+      font-size: 13px;
+      color: #555;
+      white-space: nowrap;
+    }
+
+    .bracket-team.winner {
+      background: #ecfdf5;
+      border-color: #bbf7d0;
+    }
+
+    .bracket-team.winner .bracket-team-name {
+      color: #166534;
+      font-weight: 800;
+    }
+
+    .bracket-meta {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    @media (max-width: 1100px) {
+      .bracket-grid {
+        grid-template-columns: repeat(2, minmax(240px, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .bracket-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -104,10 +249,37 @@
   <div id="upcomingMatches" class="courts"></div>
 </div>
 
-<script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=2075100455&single=true&output=csv";
+<div class="section">
+  <h2>Completed Games</h2>
+  <div id="completedMatches" class="courts"></div>
+</div>
 
-let allData = [];
+<div class="section" id="poolStandingsSection" style="display:none;">
+  <h2>Pool Standings</h2>
+  <div id="poolStandings" class="pools"></div>
+</div>
+
+<div class="section" id="playoffBracketSection" style="display:none;">
+  <h2>Playoff Bracket</h2>
+  <div id="playoffBracket" class="bracket-grid"></div>
+</div>
+
+<script>
+const MATCH_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=2075100455&single=true&output=csv";
+const STANDINGS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1925628922&single=true&output=csv";
+const PLAYOFF_MD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=335680774&single=true&output=csv";
+const PLAYOFF_BS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=706421361&single=true&output=csv";
+const PLAYOFF_GS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1590819099&single=true&output=csv";
+const PLAYOFF_GD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1784107303&single=true&output=csv";
+const PLAYOFF_BD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1321312990&single=true&output=csv";
+
+let allMatches = [];
+let allStandings = [];
+let allPlayoffsMD = [];
+let allPlayoffsBS = [];
+let allPlayoffsGS = [];
+let allPlayoffsGD = [];
+let allPlayoffsBD = [];
 let currentDivision = "ALL";
 
 function showError(message) {
@@ -161,27 +333,49 @@ function parseCSV(text) {
   return rows;
 }
 
+async function loadCSV(url) {
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error("Could not load published CSV. HTTP " + res.status);
+
+  const text = await res.text();
+  const rows = parseCSV(text);
+  if (!rows.length) throw new Error("CSV returned no rows.");
+
+  const headers = rows[0].map(h => h.trim().toLowerCase());
+
+  return rows.slice(1).map(r => {
+    let obj = {};
+    headers.forEach((h, i) => {
+      obj[h] = (r[i] || "").trim();
+    });
+    return obj;
+  });
+}
+
 async function loadData() {
   try {
-    const res = await fetch(CSV_URL);
-    if (!res.ok) throw new Error("Could not load published CSV.");
-    const text = await res.text();
+    const [matches, standings, playoffsMD, playoffsBS, playoffsGS, playoffsGD, playoffsBD] = await Promise.all([
+      loadCSV(MATCH_CSV_URL),
+      loadCSV(STANDINGS_CSV_URL),
+      loadCSV(PLAYOFF_MD_CSV_URL),
+      loadCSV(PLAYOFF_BS_CSV_URL),
+      loadCSV(PLAYOFF_GS_CSV_URL),
+      loadCSV(PLAYOFF_GD_CSV_URL),
+      loadCSV(PLAYOFF_BD_CSV_URL)
+    ]);
 
-    const rows = parseCSV(text);
-    const headers = rows[0].map(h => h.trim().toLowerCase());
-
-    allData = rows.slice(1).map(r => {
-      let obj = {};
-      headers.forEach((h, i) => {
-        obj[h] = (r[i] || "").trim();
-      });
-      return obj;
-    });
+    allMatches = matches;
+    allStandings = standings;
+    allPlayoffsMD = playoffsMD;
+    allPlayoffsBS = playoffsBS;
+    allPlayoffsGS = playoffsGS;
+    allPlayoffsGD = playoffsGD;
+    allPlayoffsBD = playoffsBD;
 
     clearError();
     render();
   } catch (err) {
-    showError("Could not load the published CSV.\n\n" + err.message);
+    showError("Loading failed.\n\n" + err.message);
   }
 }
 
@@ -197,27 +391,264 @@ function renderSection(containerId, rows, className) {
   rows.forEach(row => {
     const card = document.createElement("div");
     card.className = `card ${className}`;
+
+    const scoreA = row["score a"] || "";
+    const scoreB = row["score b"] || "";
+    const fullTeams = row.teams || "-";
+
+    const isPlayoff = /^(pi|r1|r2|qf|sf|final|gf)\b/i.test(fullTeams);
+
+    let teamDisplay = fullTeams;
+
+    if (className === "done" && scoreA !== "" && scoreB !== "") {
+      let matchLabel = "";
+      let teamsOnly = fullTeams;
+
+      if (fullTeams.includes(": ")) {
+        const splitAtColon = fullTeams.split(": ");
+        matchLabel = splitAtColon[0] + ": ";
+        teamsOnly = splitAtColon.slice(1).join(": ");
+      }
+
+      const parts = teamsOnly.split(" vs ");
+
+      if (parts.length === 2) {
+        const teamA = parts[0];
+        const teamB = parts[1];
+
+        const a = Number(scoreA);
+        const b = Number(scoreB);
+
+        const winnerStyle = 'style="font-weight:700; color:#15803d;"';
+        const loserStyle = 'style="opacity:0.85;"';
+
+        const formattedA = a > b
+          ? `<span ${winnerStyle}>${teamA}</span>`
+          : `<span ${loserStyle}>${teamA}</span>`;
+
+        const formattedB = b > a
+          ? `<span ${winnerStyle}>${teamB}</span>`
+          : `<span ${loserStyle}>${teamB}</span>`;
+
+        teamDisplay = `${matchLabel}${formattedA} vs ${formattedB}`;
+      }
+    }
+
+    const scoreLine =
+      (scoreA !== "" || scoreB !== "") ? `${scoreA || "-"} - ${scoreB || "-"}` : "";
+
+    const badgeHtml = isPlayoff ? `<div class="badge playoff">PLAYOFF</div>` : "";
+
     card.innerHTML = `
+      ${badgeHtml}
       <div class="court">Court ${row.court || "-"}</div>
-      <div class="teams">${row.teams || "-"}</div>
+      <div class="teams">${teamDisplay}</div>
+      <div class="score">${scoreLine}</div>
       <div class="meta">${row.division || ""} • ${row.status || ""}</div>
     `;
     container.appendChild(card);
   });
 }
 
+function renderStandings(rows) {
+  const container = document.getElementById("poolStandings");
+  container.innerHTML = "";
+
+  if (rows.length === 0) {
+    container.innerHTML = `<div class="error">No standings found.</div>`;
+    return;
+  }
+
+  const filteredRows = rows.filter(r =>
+    !(normalize(r.division) === "mixed doubles" && normalize(r.pool) === "e")
+  );
+
+  const pools = [...new Set(filteredRows.map(r => r.pool))].sort();
+
+  pools.forEach(poolName => {
+    const poolRows = filteredRows
+      .filter(r => r.pool === poolName)
+      .sort((a, b) => Number(a.rank || 999) - Number(b.rank || 999));
+
+    const card = document.createElement("div");
+    card.className = "pool-card";
+
+    let tableRows = poolRows.map(r => `
+      <tr>
+        <td>${r.rank || ""}</td>
+        <td>${r.team || ""}</td>
+        <td>${r.wins || ""}</td>
+        <td>${r.losses || ""}</td>
+      </tr>
+    `).join("");
+
+    card.innerHTML = `
+      <div class="pool-title">Pool ${poolName}</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Team</th>
+            <th>W</th>
+            <th>L</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function renderPlayoffBracket(rows) {
+  const container = document.getElementById("playoffBracket");
+  container.innerHTML = "";
+
+  if (rows.length === 0) {
+    container.innerHTML = `<div class="error">No playoff matches found.</div>`;
+    return;
+  }
+
+  const getRoundKey = (value) => {
+    const r = normalize(value);
+    if (r.startsWith("pi")) return "PI";
+    if (r.startsWith("r1") || r.startsWith("r2")) return "R1";
+    if (r.startsWith("qf")) return "QF";
+    if (r.startsWith("sf")) return "SF";
+    if (r.startsWith("gf") || r.startsWith("final")) return "Final";
+    return "";
+  };
+
+  const roundOrder = ["PI", "R1", "QF", "SF", "Final"];
+  const roundLabels = {
+    "PI": "Play-In Round",
+    "R1": "Round of 16",
+    "QF": "Quarterfinals",
+    "SF": "Semifinals",
+    "Final": "Championship"
+  };
+
+  roundOrder.forEach(roundName => {
+    const roundRows = rows
+      .filter(r => getRoundKey(r.round) === roundName)
+      .sort((a, b) => Number(a["match id"] || 999) - Number(b["match id"] || 999));
+
+    if (roundRows.length === 0) return;
+
+    const roundCard = document.createElement("div");
+    roundCard.className = "round-card";
+
+    let matchHtml = roundRows.map(r => {
+      const teamA = r["team a"] || "-";
+      const teamB = r["team b"] || "-";
+      const winner = normalize(r.winner);
+
+      const scoreA = [r["g1 a"], r["g2 a"], r["g3 a"]]
+        .filter(x => x !== "")
+        .join(" / ");
+
+      const scoreB = [r["g1 b"], r["g2 b"], r["g3 b"]]
+        .filter(x => x !== "")
+        .join(" / ");
+
+      const teamAClass = normalize(teamA) === winner ? "bracket-team winner" : "bracket-team";
+      const teamBClass = normalize(teamB) === winner ? "bracket-team winner" : "bracket-team";
+
+      const matchLabel = `${r.round || roundName} Match ${r["match id"] || "-"}`;
+
+      return `
+        <div class="bracket-match">
+          <div class="bracket-match-id">${matchLabel}</div>
+
+          <div class="${teamAClass}">
+            <span class="bracket-team-name">${teamA}</span>
+            <span class="bracket-team-score">${scoreA}</span>
+          </div>
+
+          <div class="${teamBClass}">
+            <span class="bracket-team-name">${teamB}</span>
+            <span class="bracket-team-score">${scoreB}</span>
+          </div>
+
+          <div class="bracket-meta">Court ${r.court || "-"} • ${r.status || ""}</div>
+        </div>
+      `;
+    }).join("");
+
+    roundCard.innerHTML = `
+      <div class="round-title">${roundLabels[roundName]}</div>
+      ${matchHtml}
+    `;
+
+    container.appendChild(roundCard);
+  });
+}
+
 function render() {
-  const divisionFiltered = allData.filter(row =>
+  const divisionFilteredMatches = allMatches.filter(row =>
     currentDivision === "ALL" || normalize(row.division) === normalize(currentDivision)
   );
 
-  const liveRows = divisionFiltered.filter(row => normalize(row.status) === "live");
-  const onDeckRows = divisionFiltered.filter(row => normalize(row.status) === "on deck");
-  const upcomingRows = divisionFiltered.filter(row => normalize(row.status) === "upcoming");
+  const divisionFilteredStandings = allStandings.filter(row =>
+    (currentDivision === "ALL" || normalize(row.division) === normalize(currentDivision)) &&
+    !(normalize(row.division) === "mixed doubles" && normalize(row.pool) === "e")
+  );
+
+  const liveRows = divisionFilteredMatches
+    .filter(row => normalize(row.status) === "live")
+    .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
+
+  const onDeckRows = divisionFilteredMatches
+    .filter(row => normalize(row.status) === "on deck")
+    .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
+
+  const upcomingRows = divisionFilteredMatches
+    .filter(row => normalize(row.status) === "upcoming")
+    .sort((a, b) => {
+      const getMatchNum = (t) => {
+        const match = (t.teams || "").match(/Match\s*(\d+)/i);
+        return match ? Number(match[1]) : 999;
+      };
+      return getMatchNum(a) - getMatchNum(b);
+    });
+
+  const completedRows = divisionFilteredMatches
+    .filter(row => ["done","complete","completed","finished"].includes(normalize(row.status)))
+    .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
 
   renderSection("liveMatches", liveRows, "live");
   renderSection("onDeckMatches", onDeckRows, "ondeck");
   renderSection("upcomingMatches", upcomingRows, "upcoming");
+  renderSection("completedMatches", completedRows, "done");
+
+  if (currentDivision !== "ALL") {
+    document.getElementById("poolStandingsSection").style.display = "block";
+    renderStandings(divisionFilteredStandings);
+  } else {
+    document.getElementById("poolStandingsSection").style.display = "none";
+  }
+
+  if (currentDivision === "Mixed Doubles") {
+    document.getElementById("playoffBracketSection").style.display = "block";
+    renderPlayoffBracket(allPlayoffsMD);
+  } else if (currentDivision === "Boys Singles") {
+    document.getElementById("playoffBracketSection").style.display = "block";
+    renderPlayoffBracket(allPlayoffsBS);
+  } else if (currentDivision === "Girls Singles") {
+    document.getElementById("playoffBracketSection").style.display = "block";
+    renderPlayoffBracket(allPlayoffsGS);
+  } else if (currentDivision === "Girls Doubles") {
+    document.getElementById("playoffBracketSection").style.display = "block";
+    renderPlayoffBracket(allPlayoffsGD);
+  } else if (currentDivision === "Boys Doubles") {
+    document.getElementById("playoffBracketSection").style.display = "block";
+    renderPlayoffBracket(allPlayoffsBD);
+  } else {
+    document.getElementById("playoffBracketSection").style.display = "none";
+  }
 }
 
 function filterDivision(div, el) {
