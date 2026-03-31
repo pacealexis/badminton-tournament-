@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Heart Lake Badminton Tournament</title>
   <style>
     body {
@@ -10,13 +11,26 @@
       background: #f4f6f8;
     }
 
-    header {
-      background: #163a70;
+    .header {
+      background: #16294d;
       color: white;
-      padding: 20px;
-      text-align: center;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .logo {
+      height: 50px;
+      width: auto;
+    }
+
+    .title {
       font-size: 28px;
       font-weight: bold;
+      letter-spacing: 1px;
+      text-align: center;
     }
 
     .tabs {
@@ -34,15 +48,16 @@
     }
 
     .tab.active {
-      color: #163a70;
-      border-bottom: 3px solid #163a70;
+      color: #16294d;
+      border-bottom: 3px solid #16294d;
     }
 
     .section {
       padding: 20px;
     }
 
-    .courts, .pools {
+    .courts,
+    .pools {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 16px;
@@ -52,7 +67,7 @@
       background: white;
       border-radius: 12px;
       padding: 16px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
       border-left: 6px solid #ccc;
     }
 
@@ -82,7 +97,8 @@
       font-size: 14px;
     }
 
-    th, td {
+    th,
+    td {
       text-align: left;
       padding: 6px 4px;
       border-bottom: 1px solid #eee;
@@ -112,7 +128,7 @@
       background: white;
       border-radius: 12px;
       padding: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       border-left: 6px solid #ccc;
     }
 
@@ -124,7 +140,7 @@
     }
 
     .match-header .match-number {
-      color: #163a70;
+      color: #16294d;
       font-weight: 900;
     }
 
@@ -156,46 +172,84 @@
       white-space: nowrap;
     }
 
-    .live { border-left-color: #22c55e; }
-    .ondeck { border-left-color: #f59e0b; }
-    .upcoming { border-left-color: #60a5fa; }
-    .done { border-left-color: #6b7280; }
+    .live {
+      border-left-color: #22c55e;
+    }
+
+    .ondeck {
+      border-left-color: #f59e0b;
+    }
+
+    .upcoming {
+      border-left-color: #60a5fa;
+    }
+
+    .done {
+      border-left-color: #6b7280;
+    }
 
     .bracket-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(240px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(5, 260px);
+      gap: 28px;
       align-items: start;
+      overflow-x: auto;
+      padding: 10px 0 20px;
     }
 
     .round-card {
-      background: white;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
     }
 
     .round-title {
       font-weight: 800;
       font-size: 18px;
-      margin-bottom: 14px;
-      color: #163a70;
-      border-bottom: 2px solid #eef2f7;
-      padding-bottom: 8px;
+      margin-bottom: 18px;
+      color: #16294d;
+      text-align: center;
+    }
+
+    .round-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .round-column.pi .bracket-match {
+      margin-bottom: 24px;
+    }
+
+    .round-column.r1 .bracket-match {
+      margin-bottom: 24px;
+    }
+
+    .round-column.qf .bracket-match {
+      margin-top: 72px;
+      margin-bottom: 170px;
+    }
+
+    .round-column.sf .bracket-match {
+      margin-top: 298px;
+      margin-bottom: 340px;
+    }
+
+    .round-column.final .bracket-match {
+      margin-top: 720px;
     }
 
     .bracket-match {
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 14px;
-      background: #fafafa;
+      border: 1px solid #d9dde5;
+      border-radius: 18px;
+      padding: 14px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
 
     .bracket-match-id {
       font-size: 12px;
       color: #6b7280;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-weight: 700;
     }
 
@@ -204,11 +258,11 @@
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-      padding: 8px 10px;
-      margin-bottom: 6px;
-      border-radius: 8px;
-      background: white;
-      border: 1px solid #f0f0f0;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      border-radius: 14px;
+      background: #fafafa;
+      border: 1px solid #ececec;
     }
 
     .bracket-team:last-child {
@@ -216,7 +270,7 @@
     }
 
     .bracket-team-name {
-      font-weight: 600;
+      font-weight: 700;
       line-height: 1.3;
     }
 
@@ -227,8 +281,8 @@
     }
 
     .bracket-team.winner {
-      background: #ecfdf5;
-      border-color: #bbf7d0;
+      background: #e8f7ee;
+      border-color: #b9e8c8;
     }
 
     .bracket-team.winner .bracket-team-name {
@@ -237,18 +291,45 @@
     }
 
     .bracket-meta {
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 12px;
       color: #6b7280;
+    }
+
+    @media (max-width: 1400px) {
+      .bracket-grid {
+        grid-template-columns: repeat(5, 240px);
+        gap: 22px;
+      }
     }
 
     @media (max-width: 1100px) {
       .bracket-grid {
         grid-template-columns: repeat(2, minmax(240px, 1fr));
       }
+
+      .round-column.qf .bracket-match,
+      .round-column.sf .bracket-match,
+      .round-column.final .bracket-match {
+        margin-top: 0;
+        margin-bottom: 24px;
+      }
     }
 
     @media (max-width: 700px) {
+      .header {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .logo {
+        height: 44px;
+      }
+
+      .title {
+        font-size: 22px;
+      }
+
       .bracket-grid {
         grid-template-columns: 1fr;
       }
@@ -256,445 +337,547 @@
   </style>
 </head>
 <body>
+  <header class="header">
+    <img src="logo.png" alt="Heart Lake Badminton Logo" class="logo" />
+    <div class="title">Heart Lake Badminton Tournament</div>
+    <img src="logo.png" alt="Heart Lake Badminton Logo" class="logo" />
+  </header>
 
-<header>🏸 Heart Lake Badminton Tournament</header>
+  <div id="lastUpdated" style="
+    text-align:center;
+    font-size:13px;
+    color:#16294d;
+    padding:8px 0;
+    background:#eef2ff;
+    border-bottom:1px solid #dbeafe;
+    font-weight:600;
+  ">
+    Last updated: --
+  </div>
 
-<div id="errorBox"></div>
-
-<div class="tabs">
-  <div class="tab active" onclick="filterDivision('ALL', this)">All</div>
-  <div class="tab" onclick="filterDivision('Boys Singles', this)">Boys Singles</div>
-  <div class="tab" onclick="filterDivision('Girls Singles', this)">Girls Singles</div>
-  <div class="tab" onclick="filterDivision('Boys Doubles', this)">Boys Doubles</div>
-  <div class="tab" onclick="filterDivision('Girls Doubles', this)">Girls Doubles</div>
-  <div class="tab" onclick="filterDivision('Mixed Doubles', this)">Mixed Doubles</div>
+<div id="scoringRules" style="
+  text-align:center;
+  padding:12px;
+  background:#16294d;
+  color:white;
+  font-size:14px;
+  line-height:1.5;
+  font-weight:500;
+">
+  🏸 Match Scoring:
+  Pool/Play-In/R16: 21 (win by 2, cap 25) |
+  QF/SF: Best of 3 to 15 (cap 19) |
+  Finals: Best of 3 to 21 (cap 25)
 </div>
 
-<div class="section">
-  <h2>Now Playing</h2>
-  <div id="liveMatches" class="courts"></div>
-</div>
+  <div id="errorBox"></div>
 
-<div class="section">
-  <h2>On Deck</h2>
-  <div id="onDeckMatches" class="courts"></div>
-</div>
+  <div class="tabs">
+    <div class="tab active" onclick="filterDivision('ALL', this)">All</div>
+    <div class="tab" onclick="filterDivision('Boys Singles', this)">Boys Singles</div>
+    <div class="tab" onclick="filterDivision('Girls Singles', this)">Girls Singles</div>
+    <div class="tab" onclick="filterDivision('Boys Doubles', this)">Boys Doubles</div>
+    <div class="tab" onclick="filterDivision('Girls Doubles', this)">Girls Doubles</div>
+    <div class="tab" onclick="filterDivision('Mixed Doubles', this)">Mixed Doubles</div>
+  </div>
 
-<div class="section">
-  <h2>Upcoming</h2>
-  <div id="upcomingMatches" class="courts"></div>
-</div>
+  <div class="section" id="liveSection">
+    <h2>Now Playing</h2>
+    <div id="liveMatches" class="courts"></div>
+  </div>
 
-<div class="section">
-  <h2>Completed Games</h2>
-  <div id="completedMatches" class="courts"></div>
-</div>
+  <div class="section" id="onDeckSection">
+    <h2>On Deck</h2>
+    <div id="onDeckMatches" class="courts"></div>
+  </div>
 
-<div class="section" id="poolStandingsSection" style="display:none;">
-  <h2>Pool Standings</h2>
-  <div id="poolStandings" class="pools"></div>
-</div>
+  <div class="section" id="upcomingSection">
+    <h2>Upcoming</h2>
+    <div id="upcomingMatches" class="courts"></div>
+  </div>
 
-<div class="section" id="playoffBracketSection" style="display:none;">
-  <h2>Playoff Bracket</h2>
-  <div id="playoffBracket" class="bracket-grid"></div>
-</div>
+  <div class="section" id="completedSection">
+    <h2>Completed Games</h2>
+    <div id="completedMatches" class="courts"></div>
+  </div>
 
-<script>
-const MATCH_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=2075100455&single=true&output=csv";
-const STANDINGS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1925628922&single=true&output=csv";
-const PLAYOFF_MD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=335680774&single=true&output=csv";
-const PLAYOFF_BS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=706421361&single=true&output=csv";
-const PLAYOFF_GS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1590819099&single=true&output=csv";
-const PLAYOFF_GD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1784107303&single=true&output=csv";
-const PLAYOFF_BD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1321312990&single=true&output=csv";
+  <div class="section" id="poolStandingsSection" style="display:none;">
+    <h2>Pool Standings</h2>
+    <div id="poolStandings" class="pools"></div>
+  </div>
 
-let allMatches = [];
-let allStandings = [];
-let allPlayoffsMD = [];
-let allPlayoffsBS = [];
-let allPlayoffsGS = [];
-let allPlayoffsGD = [];
-let allPlayoffsBD = [];
-let currentDivision = "ALL";
+  <div class="section" id="playoffBracketSection" style="display:none;">
+    <h2>Playoff Bracket</h2>
+    <div id="playoffBracket"></div>
+  </div>
 
-function showError(message) {
-  document.getElementById("errorBox").innerHTML = `<div class="error">${message}</div>`;
-}
+  <script>
+    const MATCH_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=2075100455&single=true&output=csv";
+    const STANDINGS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1925628922&single=true&output=csv";
+    const PLAYOFF_MD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=335680774&single=true&output=csv";
+    const PLAYOFF_BS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=706421361&single=true&output=csv";
+    const PLAYOFF_GS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1590819099&single=true&output=csv";
+    const PLAYOFF_GD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1784107303&single=true&output=csv";
+    const PLAYOFF_BD_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQfyb8UyEF9sBz0kXRzVP3NpRx222mgJDa4OCyqZMplIMcE2U_dvwP7k98jeD8onBTvUXdHK45fP-gu/pub?gid=1321312990&single=true&output=csv";
 
-function clearError() {
-  document.getElementById("errorBox").innerHTML = "";
-}
+    let allMatches = [];
+    let allStandings = [];
+    let allPlayoffsMD = [];
+    let allPlayoffsBS = [];
+    let allPlayoffsGS = [];
+    let allPlayoffsGD = [];
+    let allPlayoffsBD = [];
+    let currentDivision = "ALL";
 
-function normalize(v) {
-  return (v || "").toString().trim().toLowerCase();
-}
+    function showError(message) {
+      document.getElementById("errorBox").innerHTML = `<div class="error">${message}</div>`;
+    }
 
-function parseCSV(text) {
-  const rows = [];
-  let row = [];
-  let cell = "";
-  let inQuotes = false;
+    function clearError() {
+      document.getElementById("errorBox").innerHTML = "";
+    }
 
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const next = text[i + 1];
+    function normalize(v) {
+      return (v || "").toString().trim().toLowerCase();
+    }
 
-    if (char === '"') {
-      if (inQuotes && next === '"') {
-        cell += '"';
-        i++;
-      } else {
-        inQuotes = !inQuotes;
+    function updateLastUpdated() {
+      const now = new Date();
+
+      const time = now.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      const date = now.toLocaleDateString([], {
+        month: "short",
+        day: "numeric"
+      });
+
+      document.getElementById("lastUpdated").innerText = `Last updated: ${date} • ${time}`;
+    }
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            cell += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "," && !inQuotes) {
+          row.push(cell);
+          cell = "";
+        } else if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && next === "\n") i++;
+          row.push(cell);
+          if (row.some(v => v !== "")) rows.push(row);
+          row = [];
+          cell = "";
+        } else {
+          cell += char;
+        }
       }
-    } else if (char === ',' && !inQuotes) {
-      row.push(cell);
-      cell = "";
-    } else if ((char === '\n' || char === '\r') && !inQuotes) {
-      if (char === '\r' && next === '\n') i++;
-      row.push(cell);
-      if (row.some(v => v !== "")) rows.push(row);
-      row = [];
-      cell = "";
-    } else {
-      cell += char;
-    }
-  }
 
-  if (cell.length > 0 || row.length > 0) {
-    row.push(cell);
-    rows.push(row);
-  }
+      if (cell.length > 0 || row.length > 0) {
+        row.push(cell);
+        rows.push(row);
+      }
 
-  return rows;
-}
-
-async function loadCSV(url) {
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error("Could not load published CSV. HTTP " + res.status);
-
-  const text = await res.text();
-  const rows = parseCSV(text);
-  if (!rows.length) throw new Error("CSV returned no rows.");
-
-  const headers = rows[0].map(h => h.trim().toLowerCase());
-
-  return rows.slice(1).map(r => {
-    let obj = {};
-    headers.forEach((h, i) => {
-      obj[h] = (r[i] || "").trim();
-    });
-    return obj;
-  });
-}
-
-async function loadData() {
-  try {
-    const [matches, standings, playoffsMD, playoffsBS, playoffsGS, playoffsGD, playoffsBD] = await Promise.all([
-      loadCSV(MATCH_CSV_URL),
-      loadCSV(STANDINGS_CSV_URL),
-      loadCSV(PLAYOFF_MD_CSV_URL),
-      loadCSV(PLAYOFF_BS_CSV_URL),
-      loadCSV(PLAYOFF_GS_CSV_URL),
-      loadCSV(PLAYOFF_GD_CSV_URL),
-      loadCSV(PLAYOFF_BD_CSV_URL)
-    ]);
-
-    allMatches = matches;
-    allStandings = standings;
-    allPlayoffsMD = playoffsMD;
-    allPlayoffsBS = playoffsBS;
-    allPlayoffsGS = playoffsGS;
-    allPlayoffsGD = playoffsGD;
-    allPlayoffsBD = playoffsBD;
-
-    clearError();
-    render();
-  } catch (err) {
-    showError("Loading failed.\n\n" + err.message);
-  }
-}
-
-function renderSection(containerId, rows, className) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = "";
-
-  if (rows.length === 0) {
-    container.innerHTML = `<div class="error">No matches found.</div>`;
-    return;
-  }
-
-  rows.forEach(row => {
-    const card = document.createElement("div");
-    card.className = `match-card ${className}`;
-
-    const scoreA = row["score a"] || "";
-    const scoreB = row["score b"] || "";
-    const fullTeams = row.teams || "-";
-
-    const isPlayoff = /^(pi|r1|r2|qf|sf|final|gf)\b/i.test(fullTeams);
-
-    let matchNumber = "";
-    let teamText = fullTeams;
-
-    const matchMatch = fullTeams.match(/Match\s*(\d+)/i);
-    if (matchMatch) {
-      matchNumber = matchMatch[1];
+      return rows;
     }
 
-    if (fullTeams.includes(": ")) {
-      teamText = fullTeams.split(": ").slice(1).join(": ");
+    async function loadCSV(url) {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("Could not load published CSV. HTTP " + res.status);
+
+      const text = await res.text();
+      const rows = parseCSV(text);
+      if (!rows.length) throw new Error("CSV returned no rows.");
+
+      const headers = rows[0].map(h => h.trim().toLowerCase());
+
+      return rows.slice(1).map(r => {
+        const obj = {};
+        headers.forEach((h, i) => {
+          obj[h] = (r[i] || "").trim();
+        });
+        return obj;
+      });
     }
 
-    const parts = teamText.split(" vs ");
-    let teamA = parts[0] || "-";
-    let teamB = parts[1] || "-";
+    async function loadData() {
+      try {
+        const [matches, standings, playoffsMD, playoffsBS, playoffsGS, playoffsGD, playoffsBD] = await Promise.all([
+          loadCSV(MATCH_CSV_URL),
+          loadCSV(STANDINGS_CSV_URL),
+          loadCSV(PLAYOFF_MD_CSV_URL),
+          loadCSV(PLAYOFF_BS_CSV_URL),
+          loadCSV(PLAYOFF_GS_CSV_URL),
+          loadCSV(PLAYOFF_GD_CSV_URL),
+          loadCSV(PLAYOFF_BD_CSV_URL)
+        ]);
 
-    let teamAClass = "match-team";
-    let teamBClass = "match-team";
+        allMatches = matches;
+        allStandings = standings;
+        allPlayoffsMD = playoffsMD;
+        allPlayoffsBS = playoffsBS;
+        allPlayoffsGS = playoffsGS;
+        allPlayoffsGD = playoffsGD;
+        allPlayoffsBD = playoffsBD;
 
-    if (className === "done" && scoreA !== "" && scoreB !== "") {
-      if (Number(scoreA) > Number(scoreB)) teamAClass += " winner";
-      if (Number(scoreB) > Number(scoreA)) teamBClass += " winner";
+        clearError();
+        render();
+        updateLastUpdated();
+      } catch (err) {
+        showError("Loading failed.\n\n" + err.message);
+      }
     }
 
-    const badgeHtml = isPlayoff ? `<div class="badge playoff">PLAYOFF</div>` : "";
+    function renderSection(sectionId, containerId, rows, className) {
+      const section = document.getElementById(sectionId);
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
 
-    card.innerHTML = `
-      ${badgeHtml}
-      <div class="match-header">
-        <span class="match-number">Match ${matchNumber || "-"}</span>
-        • Court ${row.court || "-"}
-      </div>
+      if (rows.length === 0) {
+        let message = "No matches at the moment";
+        if (className === "live") message = "No matches currently in play";
+        if (className === "ondeck") message = "No matches on deck";
+        if (className === "upcoming") message = "No upcoming matches scheduled";
+        if (className === "done") message = "No matches completed yet";
 
-      <div class="${teamAClass}">
-        <span>${teamA}</span>
-        <span class="match-score">${scoreA || "-"}</span>
-      </div>
+        container.innerHTML = `
+          <div style="padding:12px; text-align:center; color:#6b7280; font-style:italic;">
+            ${message}
+          </div>
+        `;
+        section.style.display = "block";
+        return;
+      }
 
-      <div class="${teamBClass}">
-        <span>${teamB}</span>
-        <span class="match-score">${scoreB || "-"}</span>
-      </div>
+      section.style.display = "block";
 
-      <div class="meta">${row.division || ""} • ${row.status || ""}</div>
-    `;
+      rows.forEach(row => {
+        const card = document.createElement("div");
+        card.className = `match-card ${className}`;
 
-    container.appendChild(card);
-  });
-}
+        const scoreA = row["score a"] || "";
+        const scoreB = row["score b"] || "";
+        const fullTeams = row.teams || "-";
+        const isPlayoff = /^(pi|r1|r2|qf|sf|final|gf)\b/i.test(fullTeams);
 
-function renderStandings(rows) {
-  const container = document.getElementById("poolStandings");
-  container.innerHTML = "";
+        let matchNumber = "";
+        let teamText = fullTeams;
 
-  if (rows.length === 0) {
-    container.innerHTML = `<div class="error">No standings found.</div>`;
-    return;
-  }
+        const matchMatch = fullTeams.match(/Match\s*(\d+)/i);
+        if (matchMatch) matchNumber = matchMatch[1];
 
-  const filteredRows = rows.filter(r =>
-    !(normalize(r.division) === "mixed doubles" && normalize(r.pool) === "e")
-  );
+        if (fullTeams.includes(": ")) {
+          teamText = fullTeams.split(": ").slice(1).join(": ");
+        }
 
-  const pools = [...new Set(filteredRows.map(r => r.pool))].sort();
+        const parts = teamText.split(" vs ");
+        const teamA = parts[0] || "-";
+        const teamB = parts[1] || "-";
 
-  pools.forEach(poolName => {
-    const poolRows = filteredRows
-      .filter(r => r.pool === poolName)
-      .sort((a, b) => Number(a.rank || 999) - Number(b.rank || 999));
+        let teamAClass = "match-team";
+        let teamBClass = "match-team";
 
-    const card = document.createElement("div");
-    card.className = "pool-card";
+        if (className === "done" && scoreA !== "" && scoreB !== "") {
+          if (Number(scoreA) > Number(scoreB)) teamAClass += " winner";
+          if (Number(scoreB) > Number(scoreA)) teamBClass += " winner";
+        }
 
-    let tableRows = poolRows.map(r => `
-      <tr>
-        <td>${r.rank || ""}</td>
-        <td>${r.team || ""}</td>
-        <td>${r.wins || ""}</td>
-        <td>${r.losses || ""}</td>
-      </tr>
-    `).join("");
+        const badgeHtml = isPlayoff ? `<div class="badge playoff">PLAYOFF</div>` : "";
 
-    card.innerHTML = `
-      <div class="pool-title">Pool ${poolName}</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Team</th>
-            <th>W</th>
-            <th>L</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${tableRows}
-        </tbody>
-      </table>
-    `;
-
-    container.appendChild(card);
-  });
-}
-
-function renderPlayoffBracket(rows) {
-  const container = document.getElementById("playoffBracket");
-  container.innerHTML = "";
-
-  if (rows.length === 0) {
-    container.innerHTML = `<div class="error">No playoff matches found.</div>`;
-    return;
-  }
-
-  const getRoundKey = (value) => {
-    const r = normalize(value);
-    if (r.startsWith("pi")) return "PI";
-    if (r.startsWith("r1") || r.startsWith("r2")) return "R1";
-    if (r.startsWith("qf")) return "QF";
-    if (r.startsWith("sf")) return "SF";
-    if (r.startsWith("gf") || r.startsWith("final")) return "Final";
-    return "";
-  };
-
-  const roundOrder = ["PI", "R1", "QF", "SF", "Final"];
-  const roundLabels = {
-    "PI": "Play-In Round",
-    "R1": "Round of 16",
-    "QF": "Quarterfinals",
-    "SF": "Semifinals",
-    "Final": "Championship"
-  };
-
-  roundOrder.forEach(roundName => {
-    const roundRows = rows
-      .filter(r => getRoundKey(r.round) === roundName)
-      .sort((a, b) => Number(a["match id"] || 999) - Number(b["match id"] || 999));
-
-    if (roundRows.length === 0) return;
-
-    const roundCard = document.createElement("div");
-    roundCard.className = "round-card";
-
-    let matchHtml = roundRows.map(r => {
-      const teamA = r["team a"] || "-";
-      const teamB = r["team b"] || "-";
-      const winner = normalize(r.winner);
-
-      const scoreA = [r["g1 a"], r["g2 a"], r["g3 a"]]
-        .filter(x => x !== "")
-        .join(" / ");
-
-      const scoreB = [r["g1 b"], r["g2 b"], r["g3 b"]]
-        .filter(x => x !== "")
-        .join(" / ");
-
-      const teamAClass = normalize(teamA) === winner ? "bracket-team winner" : "bracket-team";
-      const teamBClass = normalize(teamB) === winner ? "bracket-team winner" : "bracket-team";
-
-      const matchLabel = `${r.round || roundName} Match ${r["match id"] || "-"}`;
-
-      return `
-        <div class="bracket-match">
-          <div class="bracket-match-id">${matchLabel}</div>
+        card.innerHTML = `
+          ${badgeHtml}
+          <div class="match-header">
+            <span class="match-number">Match ${matchNumber || "-"}</span>
+            • Court ${row.court || "-"}
+          </div>
 
           <div class="${teamAClass}">
-            <span class="bracket-team-name">${teamA}</span>
-            <span class="bracket-team-score">${scoreA}</span>
+            <span>${teamA}</span>
+            <span class="match-score">${scoreA || "-"}</span>
           </div>
 
           <div class="${teamBClass}">
-            <span class="bracket-team-name">${teamB}</span>
-            <span class="bracket-team-score">${scoreB}</span>
+            <span>${teamB}</span>
+            <span class="match-score">${scoreB || "-"}</span>
           </div>
 
-          <div class="bracket-meta">Court ${r.court || "-"} • ${r.status || ""}</div>
-        </div>
-      `;
-    }).join("");
+          <div class="meta">${row.division || ""} • ${row.status || ""}</div>
+        `;
 
-    roundCard.innerHTML = `
-      <div class="round-title">${roundLabels[roundName]}</div>
-      ${matchHtml}
-    `;
+        container.appendChild(card);
+      });
+    }
 
-    container.appendChild(roundCard);
-  });
-}
+    function renderStandings(rows) {
+      const container = document.getElementById("poolStandings");
+      container.innerHTML = "";
 
-function render() {
-  const divisionFilteredMatches = allMatches.filter(row =>
-    currentDivision === "ALL" || normalize(row.division) === normalize(currentDivision)
-  );
+      if (rows.length === 0) {
+        container.innerHTML = `<div class="error">No standings found.</div>`;
+        return;
+      }
 
-  const divisionFilteredStandings = allStandings.filter(row =>
-    (currentDivision === "ALL" || normalize(row.division) === normalize(currentDivision)) &&
-    !(normalize(row.division) === "mixed doubles" && normalize(row.pool) === "e")
-  );
+      const filteredRows = rows.filter(
+        r => !(normalize(r.division) === "mixed doubles" && normalize(r.pool) === "e")
+      );
 
-  const liveRows = divisionFilteredMatches
-    .filter(row => normalize(row.status) === "live")
-    .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
+      const pools = [...new Set(filteredRows.map(r => r.pool))].sort();
 
-  const onDeckRows = divisionFilteredMatches
-    .filter(row => normalize(row.status) === "on deck")
-    .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
+      pools.forEach(poolName => {
+        const poolRows = filteredRows
+          .filter(r => r.pool === poolName)
+          .sort((a, b) => Number(a.rank || 999) - Number(b.rank || 999));
 
-  const upcomingRows = divisionFilteredMatches
-    .filter(row => normalize(row.status) === "upcoming")
-    .sort((a, b) => {
-      const getMatchNum = (t) => {
-        const match = (t.teams || "").match(/Match\s*(\d+)/i);
-        return match ? Number(match[1]) : 999;
+        const card = document.createElement("div");
+        card.className = "pool-card";
+
+        const tableRows = poolRows.map(r => `
+          <tr>
+            <td>${r.rank || ""}</td>
+            <td>${r.team || ""}</td>
+            <td>${r.wins || ""}</td>
+            <td>${r.losses || ""}</td>
+          </tr>
+        `).join("");
+
+        card.innerHTML = `
+          <div class="pool-title">Pool ${poolName}</div>
+          <table>
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Team</th>
+                <th>W</th>
+                <th>L</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function winnerLabelFromSource(sourceValue) {
+      if (!sourceValue) return "TBD";
+      const src = String(sourceValue).trim();
+      if (/^W\d+$/i.test(src)) {
+        return `Winner of Match ${src.replace(/^W/i, "")}`;
+      }
+      return "TBD";
+    }
+
+    function renderPlayoffBracket(rows) {
+      const container = document.getElementById("playoffBracket");
+      container.innerHTML = "";
+
+      if (rows.length === 0) {
+        container.innerHTML = `<div class="error">No playoff matches found.</div>`;
+        return;
+      }
+
+      const getRoundKey = value => {
+        const r = normalize(value);
+        if (r.startsWith("pi")) return "PI";
+        if (r.startsWith("r1") || r.startsWith("r2")) return "R1";
+        if (r.startsWith("qf")) return "QF";
+        if (r.startsWith("sf")) return "SF";
+        if (r.startsWith("gf") || r.startsWith("final")) return "Final";
+        return "";
       };
-      return getMatchNum(a) - getMatchNum(b);
-    });
 
-  const completedRows = divisionFilteredMatches
-    .filter(row => ["done","complete","completed","finished"].includes(normalize(row.status)))
-    .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
+      const roundOrder = ["PI", "R1", "QF", "SF", "Final"];
+      const roundLabels = {
+        PI: "Play-In Round",
+        R1: "Round of 16",
+        QF: "Quarterfinals",
+        SF: "Semifinals",
+        Final: "Championship"
+      };
 
-  renderSection("liveMatches", liveRows, "live");
-  renderSection("onDeckMatches", onDeckRows, "ondeck");
-  renderSection("upcomingMatches", upcomingRows, "upcoming");
-  renderSection("completedMatches", completedRows, "done");
+      const roundClassMap = {
+        PI: "pi",
+        R1: "r1",
+        QF: "qf",
+        SF: "sf",
+        Final: "final"
+      };
 
-  if (currentDivision !== "ALL") {
-    document.getElementById("poolStandingsSection").style.display = "block";
-    renderStandings(divisionFilteredStandings);
-  } else {
-    document.getElementById("poolStandingsSection").style.display = "none";
-  }
+      const grid = document.createElement("div");
+      grid.className = "bracket-grid";
 
-  if (currentDivision === "Mixed Doubles") {
-    document.getElementById("playoffBracketSection").style.display = "block";
-    renderPlayoffBracket(allPlayoffsMD);
-  } else if (currentDivision === "Boys Singles") {
-    document.getElementById("playoffBracketSection").style.display = "block";
-    renderPlayoffBracket(allPlayoffsBS);
-  } else if (currentDivision === "Girls Singles") {
-    document.getElementById("playoffBracketSection").style.display = "block";
-    renderPlayoffBracket(allPlayoffsGS);
-  } else if (currentDivision === "Girls Doubles") {
-    document.getElementById("playoffBracketSection").style.display = "block";
-    renderPlayoffBracket(allPlayoffsGD);
-  } else if (currentDivision === "Boys Doubles") {
-    document.getElementById("playoffBracketSection").style.display = "block";
-    renderPlayoffBracket(allPlayoffsBD);
-  } else {
-    document.getElementById("playoffBracketSection").style.display = "none";
-  }
+      roundOrder.forEach(roundName => {
+        const roundRows = rows
+          .filter(r => getRoundKey(r.round) === roundName)
+          .sort((a, b) => Number(a["match id"] || 999) - Number(b["match id"] || 999));
+
+        if (roundRows.length === 0) return;
+
+        const roundCard = document.createElement("div");
+        roundCard.className = "round-card";
+
+        const column = document.createElement("div");
+        column.className = `round-column ${roundClassMap[roundName] || "r1"}`;
+
+        roundRows.forEach(r => {
+          const matchId = r["match id"] || "-";
+          const teamA = (r["team a"] || "").trim();
+          const teamB = (r["team b"] || "").trim();
+          const sourceA = (r["source a"] || "").trim();
+          const sourceB = (r["source b"] || "").trim();
+          const winner = normalize(r.winner);
+
+          const scoreA = [r["g1 a"], r["g2 a"], r["g3 a"]].filter(x => x !== "").join(" / ");
+          const scoreB = [r["g1 b"], r["g2 b"], r["g3 b"]].filter(x => x !== "").join(" / ");
+
+          const teamADisplay = teamA !== "" ? teamA : winnerLabelFromSource(sourceA);
+          const teamBDisplay = teamB !== "" ? teamB : winnerLabelFromSource(sourceB);
+
+          const hasWinner = winner !== "";
+
+          const teamAClass =
+            hasWinner && teamA !== "" && normalize(teamA) === winner
+              ? "bracket-team winner"
+              : "bracket-team";
+
+          const teamBClass =
+            hasWinner && teamB !== "" && normalize(teamB) === winner
+              ? "bracket-team winner"
+              : "bracket-team";
+
+          const displayLabel = (r["display match"] || "").trim();
+          const matchLabel = displayLabel ? displayLabel : `${r.round || roundName} Match ${matchId}`;
+
+          const matchDiv = document.createElement("div");
+          matchDiv.className = "bracket-match";
+
+          matchDiv.innerHTML = `
+            <div class="bracket-match-id">${matchLabel}</div>
+
+            <div class="${teamAClass}">
+              <span class="bracket-team-name">${teamADisplay}</span>
+              <span class="bracket-team-score">${scoreA}</span>
+            </div>
+
+            <div class="${teamBClass}">
+              <span class="bracket-team-name">${teamBDisplay}</span>
+              <span class="bracket-team-score">${scoreB}</span>
+            </div>
+
+            <div class="bracket-meta">Court ${r.court || "-"} • ${r.status || ""}</div>
+          `;
+
+          column.appendChild(matchDiv);
+        });
+
+        roundCard.innerHTML = `<div class="round-title">${roundLabels[roundName]}</div>`;
+        roundCard.appendChild(column);
+        grid.appendChild(roundCard);
+      });
+
+      container.appendChild(grid);
+    }
+
+    function render() {
+const scoring = document.getElementById("scoringRules");
+
+if (currentDivision === "ALL") {
+  scoring.style.display = "block";
+} else {
+  scoring.style.display = "none";
 }
+      const divisionFilteredMatches = allMatches.filter(
+        row => currentDivision === "ALL" || normalize(row.division) === normalize(currentDivision)
+      );
 
-function filterDivision(div, el) {
-  currentDivision = div;
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  el.classList.add("active");
-  render();
-}
+      const divisionFilteredStandings = allStandings.filter(
+        row =>
+          (currentDivision === "ALL" || normalize(row.division) === normalize(currentDivision)) &&
+          !(normalize(row.division) === "mixed doubles" && normalize(row.pool) === "e")
+      );
 
-loadData();
-setInterval(loadData, 10000);
-</script>
+      const liveRows = divisionFilteredMatches
+        .filter(row => normalize(row.status) === "live")
+        .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
 
+      const onDeckRows = divisionFilteredMatches
+        .filter(row => normalize(row.status) === "on deck")
+        .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
+
+      const upcomingRows = divisionFilteredMatches
+        .filter(row => normalize(row.status) === "upcoming")
+        .sort((a, b) => {
+          const getMatchNum = t => {
+            const m = (t.teams || "").match(/Match\s*(\d+)/i);
+            return m ? Number(m[1]) : 999;
+          };
+          return getMatchNum(a) - getMatchNum(b);
+        });
+
+      const completedRows = divisionFilteredMatches
+        .filter(row => ["done", "complete", "completed", "finished"].includes(normalize(row.status)))
+        .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
+
+      renderSection("liveSection", "liveMatches", liveRows, "live");
+      renderSection("onDeckSection", "onDeckMatches", onDeckRows, "ondeck");
+      renderSection("upcomingSection", "upcomingMatches", upcomingRows, "upcoming");
+      renderSection("completedSection", "completedMatches", completedRows, "done");
+
+      if (currentDivision !== "ALL") {
+        document.getElementById("poolStandingsSection").style.display = "block";
+        renderStandings(divisionFilteredStandings);
+      } else {
+        document.getElementById("poolStandingsSection").style.display = "none";
+      }
+
+      if (currentDivision === "Mixed Doubles") {
+        document.getElementById("playoffBracketSection").style.display = "block";
+        renderPlayoffBracket(allPlayoffsMD);
+      } else if (currentDivision === "Boys Singles") {
+        document.getElementById("playoffBracketSection").style.display = "block";
+        renderPlayoffBracket(allPlayoffsBS);
+      } else if (currentDivision === "Girls Singles") {
+        document.getElementById("playoffBracketSection").style.display = "block";
+        renderPlayoffBracket(allPlayoffsGS);
+      } else if (currentDivision === "Girls Doubles") {
+        document.getElementById("playoffBracketSection").style.display = "block";
+        renderPlayoffBracket(allPlayoffsGD);
+      } else if (currentDivision === "Boys Doubles") {
+        document.getElementById("playoffBracketSection").style.display = "block";
+        renderPlayoffBracket(allPlayoffsBD);
+      } else {
+        document.getElementById("playoffBracketSection").style.display = "none";
+      }
+    }
+
+    function filterDivision(div, el) {
+      currentDivision = div;
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      el.classList.add("active");
+      render();
+    }
+
+    loadData();
+    setInterval(loadData, 10000);
+    setInterval(updateLastUpdated, 60000);
+  </script>
 </body>
 </html>
