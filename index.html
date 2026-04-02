@@ -554,11 +554,6 @@
           loadOptionalCSV(PLAYOFF_BD_CSV_URL, "Boys Doubles playoff sheet")
         ]);
 
-        console.log("BS loaded rows:", playoffsBS.length);
-        console.log("GS loaded rows:", playoffsGS.length);
-        console.log("BS sample row:", playoffsBS[0]);
-        console.log("GS sample row:", playoffsGS[0]);
-
         allMatches = matches;
         allStandings = standings;
         allPlayoffsMD = playoffsMD;
@@ -606,9 +601,6 @@
         const scoreB = (row["score b"] || "").trim();
         const fullTeams = (row["teams"] || "").trim();
 
-        const round = (row["round"] || "").trim().toUpperCase();
-        const isPlayoff = ["PI", "R1", "R2", "QF", "SF", "GF", "FINAL"].includes(round);
-
         let matchNumber = (row["match #"] || row["match id"] || "").trim();
         if (!matchNumber) {
           const matchMatch = fullTeams.match(/Match\s*(\d+)/i);
@@ -618,20 +610,14 @@
         let teamA = "-";
         let teamB = "-";
 
-        if (isPlayoff) {
-          teamA = (row["team a"] || "").trim() || "-";
-          teamB = (row["team b"] || "").trim() || "-";
-        } else {
-          let teamText = fullTeams;
-
-          if (teamText.includes(": ")) {
-            teamText = teamText.split(": ").slice(1).join(": ");
-          }
-
-          const parts = teamText.split(" vs ");
-          teamA = (parts[0] || "-").trim();
-          teamB = (parts[1] || "-").trim();
+        let teamText = fullTeams;
+        if (teamText.includes(": ")) {
+          teamText = teamText.split(": ").slice(1).join(": ");
         }
+
+        const parts = teamText.split(" vs ");
+        teamA = (parts[0] || "-").trim();
+        teamB = (parts[1] || "-").trim();
 
         let teamAClass = "match-team";
         let teamBClass = "match-team";
@@ -641,10 +627,7 @@
           if (Number(scoreB) > Number(scoreA)) teamBClass += " winner";
         }
 
-        const badgeHtml = isPlayoff ? `<div class="badge playoff">PLAYOFF</div>` : "";
-
         card.innerHTML = `
-          ${badgeHtml}
           <div class="match-header">
             <span class="match-number">Match ${matchNumber || "-"}</span>
             • Court ${(row["court"] || "-").trim()}
@@ -812,8 +795,6 @@
         return;
       }
 
-      console.log("PLAYOFF ROWS RAW:", rows);
-
       const getRoundKey = value => {
         const r = (value || "").toString().trim().toUpperCase();
         if (r === "PI") return "PI";
@@ -849,8 +830,6 @@
           .filter(r => getRoundKey(r["round"]) === roundName)
           .sort((a, b) => Number((a["match id"] || 999)) - Number((b["match id"] || 999)));
 
-        console.log(`ROUND ${roundName} ROWS:`, roundRows);
-
         if (roundRows.length === 0) return;
 
         const roundCard = document.createElement("div");
@@ -860,17 +839,6 @@
         column.className = `round-column ${roundClassMap[roundName] || "r1"}`;
 
         roundRows.forEach(r => {
-          console.log("PLAYOFF MATCH ROW:", {
-            matchId: r["match id"],
-            round: r["round"],
-            teamA: r["team a"],
-            teamB: r["team b"],
-            g1a: r["g1 a"],
-            g1b: r["g1 b"],
-            sourceA: r["source a"],
-            sourceB: r["source b"]
-          });
-
           const matchId = (r["match id"] || "").trim() || "-";
           const sourceA = (r["source a"] || "").trim();
           const sourceB = (r["source b"] || "").trim();
@@ -882,8 +850,8 @@
           const scoreA = (r["g1 a"] || "").trim();
           const scoreB = (r["g1 b"] || "").trim();
 
-          const teamADisplay = teamA !== "" ? `A: ${teamA}` : `A: ${winnerLabelFromSource(sourceA)}`;
-          const teamBDisplay = teamB !== "" ? `B: ${teamB}` : `B: ${winnerLabelFromSource(sourceB)}`;
+          const teamADisplay = teamA !== "" ? teamA : winnerLabelFromSource(sourceA);
+          const teamBDisplay = teamB !== "" ? teamB : winnerLabelFromSource(sourceB);
 
           const teamAClass =
             winner !== "" && teamA !== "" && teamA.toLowerCase() === winner
@@ -945,15 +913,20 @@
           !(normalize(row.division) === "mixed doubles" && normalize(row.pool) === "e")
       );
 
-      const liveRows = divisionFilteredMatches
+      const nonPlayoffMatches = divisionFilteredMatches.filter(row => {
+        const round = (row["round"] || "").trim().toUpperCase();
+        return !["PI", "R1", "R2", "QF", "SF", "GF", "FINAL"].includes(round);
+      });
+
+      const liveRows = nonPlayoffMatches
         .filter(row => normalize(row.status) === "live")
         .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
 
-      const onDeckRows = divisionFilteredMatches
+      const onDeckRows = nonPlayoffMatches
         .filter(row => normalize(row.status) === "on deck")
         .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
 
-      const upcomingRows = divisionFilteredMatches
+      const upcomingRows = nonPlayoffMatches
         .filter(row => normalize(row.status) === "upcoming")
         .sort((a, b) => {
           const getMatchNum = t => {
@@ -965,7 +938,7 @@
           return getMatchNum(a) - getMatchNum(b);
         });
 
-      const completedRows = divisionFilteredMatches
+      const completedRows = nonPlayoffMatches
         .filter(row => ["done", "complete", "completed", "finished"].includes(normalize(row.status)))
         .sort((a, b) => Number(a.court || 999) - Number(b.court || 999));
 
@@ -1021,3 +994,4 @@
   </script>
 </body>
 </html>
+  
