@@ -97,8 +97,7 @@
       font-size: 14px;
     }
 
-    th,
-    td {
+    th, td {
       text-align: left;
       padding: 6px 4px;
       border-bottom: 1px solid #eee;
@@ -107,21 +106,6 @@
     th {
       font-size: 12px;
       color: #555;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 999px;
-      margin-bottom: 8px;
-      letter-spacing: 0.3px;
-    }
-
-    .badge.playoff {
-      background: #ede9fe;
-      color: #6d28d9;
     }
 
     .match-card {
@@ -172,21 +156,10 @@
       white-space: nowrap;
     }
 
-    .live {
-      border-left-color: #22c55e;
-    }
-
-    .ondeck {
-      border-left-color: #f59e0b;
-    }
-
-    .upcoming {
-      border-left-color: #60a5fa;
-    }
-
-    .done {
-      border-left-color: #6b7280;
-    }
+    .live { border-left-color: #22c55e; }
+    .ondeck { border-left-color: #f59e0b; }
+    .upcoming { border-left-color: #60a5fa; }
+    .done { border-left-color: #6b7280; }
 
     #playoffBracket {
       position: relative;
@@ -236,27 +209,11 @@
       z-index: 2;
     }
 
-    .round-column.pi .bracket-match {
-      margin-bottom: 24px;
-    }
-
-    .round-column.r1 .bracket-match {
-      margin-bottom: 24px;
-    }
-
-    .round-column.qf .bracket-match {
-      margin-top: 72px;
-      margin-bottom: 170px;
-    }
-
-    .round-column.sf .bracket-match {
-      margin-top: 298px;
-      margin-bottom: 340px;
-    }
-
-    .round-column.final .bracket-match {
-      margin-top: 720px;
-    }
+    .round-column.pi .bracket-match { margin-bottom: 24px; }
+    .round-column.r1 .bracket-match { margin-bottom: 24px; }
+    .round-column.qf .bracket-match { margin-top: 72px; margin-bottom: 170px; }
+    .round-column.sf .bracket-match { margin-top: 298px; margin-bottom: 340px; }
+    .round-column.final .bracket-match { margin-top: 720px; }
 
     .bracket-match {
       border: 1px solid #274574;
@@ -623,8 +580,8 @@
         let teamBClass = "match-team";
 
         if (className === "done" && scoreA !== "" && scoreB !== "") {
-          if (Number(scoreA) > Number(scoreB)) teamAClass += " winner";
-          if (Number(scoreB) > Number(scoreA)) teamBClass += " winner";
+          if (Number(scoreA) > Number(scoreB)) teamAClass += "winner";
+          if (Number(scoreB) > Number(scoreA)) teamBClass += "winner";
         }
 
         card.innerHTML = `
@@ -668,14 +625,14 @@
       pools.forEach(poolName => {
         const poolRows = filteredRows
           .filter(r => r.pool === poolName)
-          .sort((a, b) => Number(a.rank || 999) - Number(b.rank || 999));
+          .sort((a, b) => Number(a["rank in pool"] || 999) - Number(b["rank in pool"] || 999));
 
         const card = document.createElement("div");
         card.className = "pool-card";
 
         const tableRows = poolRows.map(r => `
           <tr>
-            <td>${r.rank || ""}</td>
+            <td>${r["rank in pool"] || ""}</td>
             <td>${r.team || ""}</td>
             <td>${r.wins || ""}</td>
             <td>${r.losses || ""}</td>
@@ -913,9 +870,53 @@
           !(normalize(row.division) === "mixed doubles" && normalize(row.pool) === "e")
       );
 
+      let currentPlayoffRows = [];
+
+      if (currentDivision === "ALL") {
+        currentPlayoffRows = [
+          ...(allPlayoffsMD || []),
+          ...(allPlayoffsBS || []),
+          ...(allPlayoffsGS || []),
+          ...(allPlayoffsGD || []),
+          ...(allPlayoffsBD || [])
+        ];
+      } else if (currentDivision === "Mixed Doubles") {
+        currentPlayoffRows = allPlayoffsMD || [];
+      } else if (currentDivision === "Boys Singles") {
+        currentPlayoffRows = allPlayoffsBS || [];
+      } else if (currentDivision === "Girls Singles") {
+        currentPlayoffRows = allPlayoffsGS || [];
+      } else if (currentDivision === "Girls Doubles") {
+        currentPlayoffRows = allPlayoffsGD || [];
+      } else if (currentDivision === "Boys Doubles") {
+        currentPlayoffRows = allPlayoffsBD || [];
+      }
+
+      const playoffMatchIds = new Set(
+        currentPlayoffRows
+          .map(r => String((r && (r["match id"] || r["match #"] || r["match"])) || "").trim())
+          .filter(id => id !== "")
+      );
+
       const nonPlayoffMatches = divisionFilteredMatches.filter(row => {
-        const round = (row["round"] || "").trim().toUpperCase();
-        return !["PI", "R1", "R2", "QF", "SF", "GF", "FINAL"].includes(round);
+        const directMatchId = String(row["match id"] || row["match #"] || "").trim();
+
+        const teamsText = String(row["teams"] || "").trim();
+        const teamsMatch = teamsText.match(/Match\s*(\d+)/i);
+        const extractedMatchId = teamsMatch ? teamsMatch[1] : "";
+
+        const candidateMatchId = directMatchId || extractedMatchId;
+
+        if (candidateMatchId && playoffMatchIds.has(candidateMatchId)) {
+          return false;
+        }
+
+        const round = String(row["round"] || "").trim().toUpperCase();
+        if (["PI", "R1", "R2", "QF", "SF", "GF", "FINAL"].includes(round)) {
+          return false;
+        }
+
+        return true;
       });
 
       const liveRows = nonPlayoffMatches
@@ -994,4 +995,3 @@
   </script>
 </body>
 </html>
-  
